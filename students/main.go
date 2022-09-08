@@ -61,6 +61,21 @@ func createStudent(w http.ResponseWriter, r *http.Request) {
 	json.NewEncoder(w).Encode(student)
 }
 
+func updateStudent(w http.ResponseWriter, r *http.Request) {
+	w.Header().Set("Content-type", "application/json")
+	params := mux.Vars(r)
+	for index, item := range students {
+		if item.ID == params["id"] {
+			students = append(students[:index], students[index+1:]...)
+			var student Student
+			_ = json.NewDecoder(r.Body).Decode(&student)
+			student.ID = params["id"]
+			students = append(students, student)
+			json.NewEncoder(w).Encode(student)
+		}
+	}
+}
+
 func main() {
 	students = append(students, Student{ID: "1", Firstname: "Max", Lastname: "Tizie", Grade: 90, Major: "Computer Science"})
 	r := mux.NewRouter()
