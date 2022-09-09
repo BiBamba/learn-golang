@@ -39,11 +39,11 @@ groups:
 - name: (( grab meta.pipeline ))
   jobs:
   - test
-  - pre
-  - rc
-  - shipit
-  - major
-  - minor
+#  - pre
+#  - rc
+#  - shipit
+#  - major
+#  - minor
 
 
 jobs:
