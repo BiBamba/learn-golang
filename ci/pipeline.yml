@@ -1,0 +1,100 @@
+meta:
+  name: (( param "Please name your pipeline" ))
+  release: (( concat meta.name " Release" ))
+  target: (( param "Please identify the name of the target Concourse CI" ))
+  pipeline: (( grab meta.name ))
+
+  git: 
+    email: (( param "Please provide the git email for automated commits" ))
+    name: (( param "Please provide the git name for automated commits" ))
+
+  go:
+    version: 1.17
+    module: (( concat "github.com/" meta.github.owner "/" meta.github.repo ))
+    cmd_module: (( grab meta.go.module ))
+    binary: (( grab meta.github.repo ))
+    force_static_binary: false
+
+  image:
+    name: starkandwayne/concourse-go
+    tage: (( grab meta.go.version ))
+  
+  github:
+    uri:          (( concat "git@github.com:" meta.github.owner "/" meta.github.repo ))
+    owner:        (( param "Please specify the name of the user / organization that owns the Github repository" ))
+    repo:         (( param "Please specify the name of the Github repository" ))
+    branch:       master
+
+#resources:
+#- name: concourse-webhook-token
+  
+#- name: learn-golang
+#  type: git
+#  check_every: never
+#  webhook_token: whdsniuusknslkdnziussuye2663g38dbd
+#  source: 
+#    uri: https://github.com/BiBamba/learn-golang.git
+
+groups:
+- name: (( grab meta.pipeline ))
+  jobs:
+  - test
+  - pre
+  - rc
+  - shipit
+  - major
+  - minor
+
+
+jobs:
+- name: test
+  public: true
+  serial: true
+  plan:
+  - in_parallel:
+    - { get: git, trigger: true }
+  - task: test
+    config:
+      platform: linux
+      image_resource:
+        type: docker-image
+        source: 
+          repository: (( grab meta.image.name ))
+          tag:        (( grab meta.image.tag ))
+      inputs:
+        - name: git 
+          path: (( concat "gopath/src" meta.go.module ))
+      run: 
+        path: (( concat "./gopath/src/" meta.go.module "scripts/test"))
+        args: []
+      params:
+        MODULE: (( grab meta.go.module ))
+
+
+
+#- name: list-file
+#  plan: 
+#  - get: learn-golang
+#    trigger: true
+#  - task: list-file
+#    config:
+#      platform: linux
+#      image_resource:
+#        type: registry-image
+#        source:
+#          repository: busybox
+#      inputs:
+#      - name: learn-golang
+#      run:
+#        path: ls
+#        args: ["learn-golang"]
+
+resources:
+ - name: git
+    type: git
+    check_every: 60m
+    webhook_token: shueuwt7e767we67rgbfyst7sa779s9
+    source:
+      uri:         (( grab meta.github.uri ))
+
+

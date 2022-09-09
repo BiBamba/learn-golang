@@ -1,0 +1,20 @@
+---
+meta:
+  name: students
+  release: Students
+  target: snw-bbamba-lab
+  url: https://10.128.224.33
+
+  initial_version: 0.0.1
+
+  go:
+    force_static_binary: true
+
+  git:
+    email: maxime@hotmail.fr
+    name: CI Bot
+
+  github:
+    owner: bibamba
+    repo: learn-golang
+    branch: main   
