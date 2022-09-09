@@ -93,7 +93,7 @@ resources:
  - name: git
     type: git
     check_every: 60m
-    webhook_token: "shueuwt7e767we67rgbfyst7sa779s9"
+#    webhook_token: "shueuwt7e767we67rgbfyst7sa779s9"
     source:
       uri:         (( grab meta.github.uri ))
 
