@@ -14,10 +14,6 @@ meta:
     cmd_module: (( grab meta.go.module ))
     binary: (( grab meta.github.repo ))
     force_static_binary: false
-
-  image:
-    name: starkandwayne/concourse-go
-    tage: (( grab meta.go.version ))
   
   github:
     uri:          (( concat "git@github.com:" meta.github.owner "/" meta.github.repo ))
@@ -57,18 +53,14 @@ jobs:
     config:
       platform: linux
       image_resource:
-        type: docker-image
+        type: registry-image
         source: 
-          repository: (( grab meta.image.name ))
-          tag:        (( grab meta.image.tag ))
+          repository: alpine
       inputs:
         - name: git 
-          path: (( concat "gopath/src" meta.go.module ))
       run: 
-        path: (( concat "./gopath/src/" meta.go.module "scripts/test"))
+        path: ./students/ci/scripts/test
         args: []
-      params:
-        MODULE: (( grab meta.go.module ))
 
 
 
@@ -95,6 +87,6 @@ resources:
    check_every: 60m
    webhook_token: "shueuwt7e767we67rgbfyst7sa779s9"
    source:
-     uri:         (( grab meta.github.uri ))
+     uri: https://github.com/BiBamba/learn-golang.git
 
 
